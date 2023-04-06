@@ -1,27 +1,41 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <navbar
+    :pages="pages"
+    active-page="activePage"
+    :nav-link-click="(index) => (activePage = index)"
+  ></navbar>
+
+  <page-viewer :page="pages[activePage]"></page-viewer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+<script>
+import Navbar from "./components/Navbar.vue";
+import PageViewer from "./components/PageViewer.vue";
 
-export default defineComponent({
-  name: 'App',
+export default {
   components: {
-    HelloWorld
-  }
-});
-</script>
+    Navbar,
+    PageViewer,
+  },
+  created() {
+    this.getPages()
+  },
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  data() {
+    return {
+      activePage: 0,
+      useDarkNavbar: true,
+      pages: [],
+    };
+  },
+
+  methods: {
+    async getPages() {
+      let res = await fetch("pages.json");
+      let data = await res.json();
+
+      this.pages = data;
+    },
+  },
+};
+</script>
